@@ -1,0 +1,31 @@
+import torch
+
+from torch.nn import functional as F
+
+/**
+
+Your model here.
+
+t is the ground truth (MOS).
+
+**/
+
+scores = self.model(x)
+
+scores = scores.squeeze(1)
+
+loss_mse = F.mse_loss(scores, t)
+
+diff_pred = scores.unsqueeze(0) - scores.unsqueeze(1)
+
+diff_true = t.unsqueeze(0) - t.unsqueeze(1)
+
+loss_qdc = F.mse_loss(diff_pred, diff_true)
+
+p=self.hparams.p
+
+diff_true = torch.mul(torch.sign(diff_true), torch.max( torch.abs(diff_true) - p, torch.zeros_like(diff_true)))
+
+loss_qac =-( diff_pred * torch.sign(diff_true )  ).mean()
+
+loss = loss_qdc +loss_qac + loss_mse
