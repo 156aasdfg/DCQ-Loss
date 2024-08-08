@@ -22,7 +22,8 @@ diff_true = t.unsqueeze(0) - t.unsqueeze(1)
 
 loss_qdc = F.mse_loss(diff_pred, diff_true)
 
-p=self.hparams.p
+p=self.hparams.p //You can directly set p to 0 or adjust its parameters, such as 0.1
+
 
 diff_true = torch.mul(torch.sign(diff_true), torch.max( torch.abs(diff_true) - p, torch.zeros_like(diff_true)))
 
